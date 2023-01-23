@@ -13,6 +13,9 @@
 using namespace cv;
 using namespace std;
 
+const int CRITERE_HOMOGENEITE = 50;
+const int CRITERE_SIMILARITE = 15;
+
 //Région défini par un point au coordonnée (x,y), une largeur, une hauteur et une couleur
 struct Region {
     int x;
@@ -49,12 +52,12 @@ int colorRegion(Region r1, Mat src) {
 
 //Fonction qui retourne la couleur du pixel ave le plus petit niveau de gris (minimum) de la région
 int minColorRegion(Region r1, Mat src) {
-    int mincolor = src.at<Vec3b>(0,0)[0];
-    for(int i=0; i<r1.width;i++) {
-        for(int j=0; j<r1.height;j++) {
-            int coloractu = src.at<Vec3b>(i,j)[0];
+    int mincolor = src.at<Vec3b>(r1.y,r1.x)[0];
+    for(int i=r1.x ; i<r1.x + r1.width;i++) {
+        for(int j=r1.y; j<r1.y+r1.height;j++) {
+            int coloractu = src.at<Vec3b>(j,i)[0];
             if(coloractu < mincolor) {
-                mincolor = src.at<Vec3b>(i,j)[0];
+                mincolor = src.at<Vec3b>(j,i)[0];
             }
         }
     }
@@ -64,13 +67,13 @@ int minColorRegion(Region r1, Mat src) {
 
 //Fonction qui retourne la couleur du pixel avec le plus haut niveau de gris (maximum) de la région
 int maxColorRegion(Region r1, Mat src) {
-    int maxcolor = src.at<Vec3b>(0,0)[0];
-    for(int i=0; i<r1.width;i++) {
-        for(int j=0; j<r1.height;j++) {
-            int coloractu = src.at<Vec3b>(i,j)[0];
+    int maxcolor = src.at<Vec3b>(r1.y,r1.x)[0];
+    for(int i=r1.x; i < r1.x+r1.width;i++) {
+        for(int j=r1.y; j < r1.y+r1.height;j++) {
+            int coloractu = src.at<Vec3b>(j,i)[0];
             
             if(coloractu > maxcolor) {
-                maxcolor = src.at<Vec3b>(i,j)[0];
+                maxcolor = src.at<Vec3b>(j,i)[0];
             }
         }
     }
@@ -82,7 +85,7 @@ int maxColorRegion(Region r1, Mat src) {
 bool RegionSimilaire(Region r1, Region r2) {
     int diffcolor = abs(r2.color - r1.color);
 
-    if(diffcolor < 5) {
+    if(diffcolor < CRITERE_SIMILARITE) {
         return true;
     } else {
         return false;
@@ -101,8 +104,7 @@ bool RegionAdjacent(Region region1, Region region2) {
     if(region1.y + region1.height == region2.y) {
         ycolle = true;
     }
-    //les régions sont adjacentes en x si x est supérieur à 0 et que y est égal à 0
-    //les régions sont adjacentes en y si x est égal à 0 et que y est supérieur à 0
+    //les régions sont adjacentes en x si x est supérieur à 0 et que y est égal à 0 et en y si x est égal à 0 et que y est supérieur à 0
     return (x > 0 && y == 0 && ycolle == true) || (x == 0 && y > 0 && xcolle == true);
 }
 
@@ -152,16 +154,16 @@ bool splitRegion(Region r, vector<Region> &VectorRegion, Mat &src, bool changeme
     VectorRegion.insert(VectorRegion.begin()+ position + 3, r4);
 
     if(changement) {
-        if( ( (maxColorRegion(r1,src) - minColorRegion(r1,src) ) > 50) && (r1.width> 1) && (r1.height>1) ) {
+        if( ( (maxColorRegion(r1,src) - minColorRegion(r1,src) ) > CRITERE_HOMOGENEITE) && (r1.width> 5) && (r1.height>5) ) {
             splitRegion(r1,VectorRegion,src,true);
         }
-        if(( (maxColorRegion(r2,src) - minColorRegion(r2,src) ) > 50) && (r2.width> 1) && (r2.height>1)) {
+        if(( (maxColorRegion(r2,src) - minColorRegion(r2,src) ) > CRITERE_HOMOGENEITE) && (r2.width> 5) && (r2.height>5)) {
             splitRegion(r2,VectorRegion,src,true);
         }
-        if(( (maxColorRegion(r3,src) - minColorRegion(r3,src) ) > 50) && (r3.width> 1) && (r3.height>1)) {
+        if(( (maxColorRegion(r3,src) - minColorRegion(r3,src) ) > CRITERE_HOMOGENEITE) && (r3.width> 5) && (r3.height>5)) {
             splitRegion(r3,VectorRegion,src,true);
         }
-        if(( (maxColorRegion(r4,src) - minColorRegion(r4,src) ) > 50) && (r4.width> 1) && (r4.height>1)) {
+        if(( (maxColorRegion(r4,src) - minColorRegion(r4,src) ) > CRITERE_HOMOGENEITE) && (r4.width> 5) && (r4.height>5)) {
             splitRegion(r4,VectorRegion,src,true);
         }
     }
@@ -224,8 +226,8 @@ void dessinerRegion(Mat &src, vector<Region> VectorRegion, bool color, bool bord
 
 int main( int argc, char** argv )
 {
-    //CommandLineParser parser( argc, argv, "{@input | ../data/TEST1.jpeg | input image}" );
-    CommandLineParser parser( argc, argv, "{@input | ../data/TEST2.jpeg | input image}" );
+    CommandLineParser parser( argc, argv, "{@input | ../data/TEST1.jpeg | input image}" );
+    //CommandLineParser parser( argc, argv, "{@input | ../data/TEST2.jpeg | input image}" );
     
     Mat src = imread( samples::findFile( parser.get<String>( "@input" ) ), IMREAD_COLOR );
 
@@ -294,7 +296,7 @@ int main( int argc, char** argv )
     }
 
     //Affichage des différentes images
-    dessinerRegion(SplitandMerge,VectorRegion,false,true);
+    dessinerRegion(SplitandMerge,VectorRegion,true,true);
     imshow("SplitandMerge",SplitandMerge);
 
     imshow("Source",src);
