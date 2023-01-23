@@ -82,7 +82,7 @@ int maxColorRegion(Region r1, Mat src) {
 bool RegionSimilaire(Region r1, Region r2) {
     int diffcolor = abs(r2.color - r1.color);
 
-    if(diffcolor < 20) {
+    if(diffcolor < 5) {
         return true;
     } else {
         return false;
@@ -152,16 +152,16 @@ bool splitRegion(Region r, vector<Region> &VectorRegion, Mat &src, bool changeme
     VectorRegion.insert(VectorRegion.begin()+ position + 3, r4);
 
     if(changement) {
-        if( ( (maxColorRegion(r1,src) - minColorRegion(r1,src) ) > 20) && (r1.width> 1) && (r1.height>1) ) {
+        if( ( (maxColorRegion(r1,src) - minColorRegion(r1,src) ) > 50) && (r1.width> 1) && (r1.height>1) ) {
             splitRegion(r1,VectorRegion,src,true);
         }
-        if(( (maxColorRegion(r2,src) - minColorRegion(r2,src) ) > 20) && (r2.width> 1) && (r2.height>1)) {
+        if(( (maxColorRegion(r2,src) - minColorRegion(r2,src) ) > 50) && (r2.width> 1) && (r2.height>1)) {
             splitRegion(r2,VectorRegion,src,true);
         }
-        if(( (maxColorRegion(r3,src) - minColorRegion(r3,src) ) > 20) && (r3.width> 1) && (r3.height>1)) {
+        if(( (maxColorRegion(r3,src) - minColorRegion(r3,src) ) > 50) && (r3.width> 1) && (r3.height>1)) {
             splitRegion(r3,VectorRegion,src,true);
         }
-        if(( (maxColorRegion(r4,src) - minColorRegion(r4,src) ) > 20) && (r4.width> 1) && (r4.height>1)) {
+        if(( (maxColorRegion(r4,src) - minColorRegion(r4,src) ) > 50) && (r4.width> 1) && (r4.height>1)) {
             splitRegion(r4,VectorRegion,src,true);
         }
     }
@@ -204,7 +204,7 @@ void dessinerRegion(Mat &src, vector<Region> VectorRegion, bool color, bool bord
             }
         }
         if(border) {
-            for(int i = r.x ; i < r.x + r.width; i++) {
+            for(int i = r.x ; i <= r.x + r.width; i++) {
                 for(int j = r.y; j <= r.y + r.height; j++) {
                     if(i == r.x || i == r.x + r.width) {
                         src.at<Vec3b>(j,i)[0] = 0;
@@ -224,8 +224,8 @@ void dessinerRegion(Mat &src, vector<Region> VectorRegion, bool color, bool bord
 
 int main( int argc, char** argv )
 {
-    CommandLineParser parser( argc, argv, "{@input | ../data/TEST1.jpeg | input image}" );
-    //CommandLineParser parser( argc, argv, "{@input | ../data/TEST2.jpeg | input image}" );
+    //CommandLineParser parser( argc, argv, "{@input | ../data/TEST1.jpeg | input image}" );
+    CommandLineParser parser( argc, argv, "{@input | ../data/TEST2.jpeg | input image}" );
     
     Mat src = imread( samples::findFile( parser.get<String>( "@input" ) ), IMREAD_COLOR );
 
@@ -272,7 +272,7 @@ int main( int argc, char** argv )
         int sizevector = VectorRegion.size();
         for(int i=0 ; i < sizevector; i++) {
             Region r1 = VectorRegion[i];
-            for(int j=0 ; j < sizevector; j++) {
+            for(int j=i+1 ; j < sizevector; j++) {
                 Region r2 = VectorRegion[j];
                 bool similaire = RegionSimilaire(r1,r2);
                 bool adjacent = RegionAdjacent(r1,r2);
@@ -294,7 +294,7 @@ int main( int argc, char** argv )
     }
 
     //Affichage des différentes images
-    dessinerRegion(SplitandMerge,VectorRegion,true,false);
+    dessinerRegion(SplitandMerge,VectorRegion,false,true);
     imshow("SplitandMerge",SplitandMerge);
 
     imshow("Source",src);

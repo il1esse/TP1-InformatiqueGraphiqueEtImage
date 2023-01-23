@@ -8,7 +8,7 @@ set(CMAKE_DEPENDS_LANGUAGES
 
 # The set of dependency files which are needed:
 set(CMAKE_DEPENDS_DEPENDENCY_FILES
-  "/home/iliesse/Bureau/splitmerge/main.cpp" "CMakeFiles/tp1.dir/main.cpp.o" "gcc" "CMakeFiles/tp1.dir/main.cpp.o.d"
+  "/home/iliesse/Bureau/informatique-graphique-et-image-tp1/main.cpp" "CMakeFiles/tp1.dir/main.cpp.o" "gcc" "CMakeFiles/tp1.dir/main.cpp.o.d"
   )
 
 # Targets to which this target links.

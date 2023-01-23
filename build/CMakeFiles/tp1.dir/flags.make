@@ -4,7 +4,7 @@
 # compile CXX with /usr/bin/c++
 CXX_DEFINES = 
 
-CXX_INCLUDES = -I/home/iliesse/Bureau/splitmerge/inc -isystem /usr/local/include/opencv4
+CXX_INCLUDES = -I/home/iliesse/Bureau/informatique-graphique-et-image-tp1/inc -isystem /usr/local/include/opencv4
 
 CXX_FLAGS = -Wall -Wextra -march=native -pthread -O3 -std=gnu++20
 

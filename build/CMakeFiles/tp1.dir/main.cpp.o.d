@@ -1,4 +1,5 @@
-CMakeFiles/tp1.dir/main.cpp.o: /home/iliesse/Bureau/splitmerge/main.cpp \
+CMakeFiles/tp1.dir/main.cpp.o: \
+ /home/iliesse/Bureau/informatique-graphique-et-image-tp1/main.cpp \
  /usr/include/stdc-predef.h /usr/local/include/opencv4/opencv2/core.hpp \
  /usr/local/include/opencv4/opencv2/core/cvdef.h \
  /usr/local/include/opencv4/opencv2/core/version.hpp \

@@ -28,4 +28,3 @@ add_executable(tp1 ${SRCS})
 
 
 target_link_libraries(tp1 ${OpenCV_LIBS} )
-
