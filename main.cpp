@@ -226,8 +226,8 @@ void dessinerRegion(Mat &src, vector<Region> VectorRegion, bool color, bool bord
 
 int main( int argc, char** argv )
 {
-    CommandLineParser parser( argc, argv, "{@input | ../data/TEST1.jpeg | input image}" );
-    //CommandLineParser parser( argc, argv, "{@input | ../data/TEST2.jpeg | input image}" );
+    //CommandLineParser parser( argc, argv, "{@input | ../data/TEST1.jpeg | input image}" );
+    CommandLineParser parser( argc, argv, "{@input | ../data/TEST2.jpeg | input image}" );
     
     Mat src = imread( samples::findFile( parser.get<String>( "@input" ) ), IMREAD_COLOR );
 
@@ -265,7 +265,7 @@ int main( int argc, char** argv )
     bool changement = splitRegion(initial,VectorRegion,src,true);
     
     //Affichage de l'image après l'étape de division mais sans la fusion
-    dessinerRegion(Split,VectorRegion,false,true);
+    dessinerRegion(Split,VectorRegion,false,false);
     imshow("Split",Split);
 
     //si changement est false c'est qu'il n'y a plus de split en cours donc on peut lancer le processus de fusion
@@ -296,7 +296,7 @@ int main( int argc, char** argv )
     }
 
     //Affichage des différentes images
-    dessinerRegion(SplitandMerge,VectorRegion,true,true);
+    dessinerRegion(SplitandMerge,VectorRegion,false,true);
     imshow("SplitandMerge",SplitandMerge);
 
     imshow("Source",src);
